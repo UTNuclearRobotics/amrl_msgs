@@ -1,50 +1,25 @@
-PROJECT(amrl_msgs)
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0.2)
+project(amrl_msgs)
 
-option(CATKIN_TOOLS_BUILD "Build using catkin tools. Otherwise, rosbuild is uesd" ON)
+find_package(catkin REQUIRED
+  roscpp
+  geometry_msgs
+  message_generation
+)
 
-if(CATKIN_TOOLS_BUILD)
-  find_package(catkin REQUIRED
-  COMPONENTS
-    geometry_msgs
-    message_generation
-    sensor_msgs
-    std_msgs
-  )
-  add_message_files(
-  DIRECTORY msg
-  FILES
-  AckermannCurvatureDriveMsg.msg
-  ColoredArc2D.msg
-  ColoredLine2D.msg
-  ColoredPoint2D.msg
-  Localization2DMsg.msg
-  PathVisualization.msg
-  Point2D.msg
-  Pose2Df.msg
-  RobofleetStatus.msg
-  RobofleetSubscription.msg
-  VisualizationMsg.msg
-  )  
-  generate_messages(
-    DEPENDENCIES geometry_msgs sensor_msgs std_msgs
-  )   
-  catkin_package(
-    CATKIN_DEPENDS
-      geometry_msgs
-      message_runtime
-      sensor_msgs
-      std_msgs
-  )
+## Generate messages in the 'msg' folder
+add_message_files(DIRECTORY msg)
 
-else()
+## Generate services in the 'srv' folder
+add_service_files(DIRECTORY srv)
 
-  INCLUDE($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-  ROSBUILD_INIT()
-  SET(ROS_BUILD_STATIC_LIBS true)
-  SET(ROS_BUILD_SHARED_LIBS false)
+## Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+)
 
-  ROSBUILD_GENMSG()
-  ROSBUILD_GENSRV()
-
-endif()
+catkin_package(
+  CATKIN_DEPENDS geometry_msgs message_runtime
+)
